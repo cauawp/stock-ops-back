@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - '3001:3001'
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    volumes:
+      - ./:/usr/src/app  # monta o código fonte dentro do container
+      - /usr/src/app/node_modules  # evita conflito com node_modules do host
+    environment:
+      - LOG_FILE_PATH=/usr/src/app/src/Logs
+    command: npm run start:dev
+    stdin_open: true
+    tty: true
+    entrypoint: ["npm", "run", "start:dev"]
+
+  postgres:
+    image: postgres:15
+    restart: always
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+    volumes:
+      - postgresdata:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   restart: always
+  #   ports:
+  #     - "5050:80"
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+  #     PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+  #   depends_on:
+  #     - postgres
+
+volumes:
+  postgresdata:
