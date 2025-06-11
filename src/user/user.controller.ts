@@ -7,11 +7,11 @@ import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 
-@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
+  
+  @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   @Roles(Role.admin)
   async getUsers(): Promise<{ id: string; name: string; email: string; role: Role }[]> {
