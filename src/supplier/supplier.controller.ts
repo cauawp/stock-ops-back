@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Supplier } from '@prisma/client';
 import { SupplierService } from './supplier.service';
 
@@ -34,8 +34,13 @@ export class SupplierController {
     return this.supplierService.findAll();
   }
 
-  // @Post()
-  // async createSupplier(@Body() data: any): Promise<Supplier> {
-  //   return await this.supplierService.create(data);
-  // }
+  @Get(':idSupplier')
+  async getSupplierById(@Param('idSupplier') id: string) {
+    return this.supplierService.findOneById(id);
+  }
+
+  @Post()
+  async createSupplier(@Body() data: any): Promise<Supplier> {
+    return await this.supplierService.create(data);
+  }
 }

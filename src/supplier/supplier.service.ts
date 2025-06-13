@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'prisma/prisma.service';
+import { CreateSupplierDto } from './dto/supplier.dto';
 
 @Injectable()
 export class SupplierService {
@@ -35,6 +36,30 @@ export class SupplierService {
       },
     });
   }
+
+  async create(dto: CreateSupplierDto) {
+    return this.prisma.supplier.create({
+      data: {
+        name: dto.name,
+        address: dto.address,
+        cnpj: dto.cnpj,
+        products: dto.products ? {
+          create: dto.products
+        } : undefined,
+      }
+    });
+  }
+
+  async findOneById(id: string) {
+    return this.prisma.supplier.findUnique({
+      where: { id },
+      include: {
+        products: true,
+        StockMovement: true,
+      },
+    });
+  }
+
 
 
 }
