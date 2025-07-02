@@ -1,31 +1,40 @@
-import { Controller, Get, Post, Body, UseGuards, Param } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 import { UserService } from './user.service';
-import { User } from '@prisma/client';
-// import { Role } from 'generated/prisma';
+import { UserEntity } from './dto/user.entity';
+import { CreateUserDto } from './dto/create-user.dto';
 import { Role } from '@prisma/client';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 
+@ApiTags('Usuários')
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-  
+
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Get()
   @Roles(Role.admin)
-  async getUsers(): Promise<{ id: string; name: string; email: string; role: Role }[]> {
+  @ApiOperation({ summary: 'Listar usuários' })
+  @ApiResponse({ status: 200, type: [UserEntity] })
+  async getUsers(): Promise<UserEntity[]> {
     return this.userService.findAll();
   }
 
   @Post()
-  async createUser(@Body() data: any): Promise<User> {
+  @ApiOperation({ summary: 'Criar usuário' })
+  @ApiResponse({ status: 201, type: UserEntity })
+  async createUser(@Body() data: CreateUserDto): Promise<UserEntity> {
     return await this.userService.create(data);
   }
 
-  @Get(":idUser")
+  @Get(':idUser')
+  @ApiOperation({ summary: 'Buscar usuário por ID' })
+  @ApiParam({ name: 'idUser', description: 'ID do usuário (UUID)' })
+  @ApiResponse({ status: 200, type: UserEntity })
+  @ApiResponse({ status: 404, description: 'Usuário não encontrado' })
   async getSupplierById(@Param('idUser') id: string) {
     return this.userService.findUserById(id);
   }
-
 }

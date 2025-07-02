@@ -1,4 +1,5 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config'; // ⬅️ importado aqui
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -10,10 +11,23 @@ import { SupplierModule } from './supplier/supplier.module';
 import { StockMovementModule } from './stock-movement/stock-movement.module';
 import { ProductService } from './product/product.service';
 import { ProductController } from './product/product.controller';
+import { KeepAliveService } from './keep-alive.service';
 
 @Module({
-  imports: [UserModule, AuthModule, ProductModule, SupplierModule, StockMovementModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }), // ⬅️ isso aqui é essencial
+    UserModule,
+    AuthModule,
+    ProductModule,
+    SupplierModule,
+    StockMovementModule,
+  ],
   controllers: [AppController, SupplierController, ProductController],
-  providers: [AppService, SupplierService, ProductService],
+  providers: [
+    AppService,
+    KeepAliveService,
+    SupplierService,
+    ProductService,
+  ],
 })
 export class AppModule {}
