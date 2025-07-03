@@ -20,9 +20,11 @@ export class SupplierService {
             barcode: true,
             minQuantity: true,
             supplierId: true,
+            imageUrl: true, // adicionado
+            createdAt: true, // adicionado
           },
         },
-        StockMovement: {  // nome da relação em camelCase
+        StockMovement: {
           select: {
             id: true,
             type: true,
@@ -36,6 +38,7 @@ export class SupplierService {
       },
     });
   }
+
 
   async create(dto: CreateSupplierDto) {
     return this.prisma.supplier.create({
@@ -53,13 +56,36 @@ export class SupplierService {
   async findOneById(id: string) {
     return this.prisma.supplier.findUnique({
       where: { id },
-      include: {
-        products: true,
-        StockMovement: true,
+      select: {
+        id: true,
+        name: true,
+        cnpj: true,
+        address: true,
+        products: {
+          select: {
+            id: true,
+            name: true,
+            barcode: true,
+            minQuantity: true,
+            supplierId: true,
+            imageUrl: true,
+            createdAt: true,
+          },
+        },
+        StockMovement: {
+          select: {
+            id: true,
+            type: true,
+            quantity: true,
+            reason: true,
+            productId: true,
+            userId: true,
+            createdAt: true,
+          },
+        },
       },
     });
   }
-
 
 
 }
