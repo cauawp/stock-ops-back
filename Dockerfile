@@ -23,5 +23,7 @@ COPY --from=builder /app/package.json ./
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/dist ./dist
 
+EXPOSE 3001
+
 # Executa migrations e inicia o app
 CMD npx prisma migrate deploy && npm run start:prod
