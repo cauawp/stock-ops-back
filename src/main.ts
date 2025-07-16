@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
-// importe os módulos que devem aparecer no Swagger
+// Módulos usados no Swagger
 import { UserModule } from './user/user.module';
 import { ProductModule } from './product/product.module';
 import { SupplierModule } from './supplier/supplier.module';
@@ -13,6 +13,12 @@ import { AuthModule } from './auth/auth.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // ✅ Habilita CORS para qualquer origem (liberado)
+  app.enableCors({
+    origin: '*',
+  });
+
+  // ✅ Validação global (DTOs)
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -23,7 +29,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Plataforma de Gestão de Estoque')
-    .setDescription('API para controle de produtos, fornecedores, movimentações de estoque e usuários com autenticação JWT.')
+    .setDescription(
+      'API para controle de produtos, fornecedores, movimentações de estoque e usuários com autenticação JWT.',
+    )
     .setVersion('1.0.0')
     .addBearerAuth(
       {
@@ -36,7 +44,13 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, config, {
-    include: [AuthModule, UserModule, ProductModule, SupplierModule, StockMovementModule],
+    include: [
+      AuthModule,
+      UserModule,
+      ProductModule,
+      SupplierModule,
+      StockMovementModule,
+    ],
   });
 
   SwaggerModule.setup('api/docs', app, document);
