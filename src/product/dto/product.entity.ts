@@ -1,25 +1,24 @@
-// product.entity.ts (exemplo)
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class ProductEntity {
-  @ApiProperty()
+  @ApiProperty({ example: 'uuid-produto-1234' })
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'Teclado Mecânico' })
   name: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: '1234567890123' })
   barcode: string;
 
-  @ApiPropertyOptional()
-  imageUrl?: string | null;
+  @ApiPropertyOptional({ example: 'https://img.com/produto.jpg' })
+  imageUrl: string | null; // <- antes estava string | undefined
 
-  @ApiProperty()
+  @ApiProperty({ example: 5 })
   minQuantity: number;
 
-  @ApiPropertyOptional()
-  supplierId?: string | null;
+  @ApiPropertyOptional({ example: 'uuid-fornecedor-5678' })
+  supplierId: string | null; // <- mesma coisa
 
-  @ApiProperty()
+  @ApiProperty({ example: '2024-01-01T12:00:00.000Z' })
   createdAt: Date;
 }

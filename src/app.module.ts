@@ -12,22 +12,36 @@ import { StockMovementModule } from './stock-movement/stock-movement.module';
 import { ProductService } from './product/product.service';
 import { ProductController } from './product/product.controller';
 import { KeepAliveService } from './keep-alive.service';
+import { EmailModule } from './email/email.module';
+import { EmailController } from './email/email.controller';
+import { EmailService } from './email/email.service';
+import { UserService } from './user/user.service';
+import { UserController } from './user/user.controller';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }), // ⬅️ isso aqui é essencial
+    ConfigModule.forRoot({ isGlobal: true }),
     UserModule,
     AuthModule,
     ProductModule,
     SupplierModule,
     StockMovementModule,
+    EmailModule,
   ],
-  controllers: [AppController, SupplierController, ProductController],
+  controllers: [
+    AppController,
+    UserController,
+    SupplierController,
+    ProductController,
+    EmailController,
+  ],
   providers: [
     AppService,
+    UserService,
     KeepAliveService,
     SupplierService,
     ProductService,
+    EmailService,
   ],
 })
 export class AppModule {}

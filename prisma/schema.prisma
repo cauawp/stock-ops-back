@@ -67,4 +67,7 @@ model User {
   passwordHash String
   role         Role
   movements    StockMovement[]
+
+  resetToken        String?   @db.Text
+  resetTokenExpires DateTime?
 }

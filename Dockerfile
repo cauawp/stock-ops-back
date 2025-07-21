@@ -8,7 +8,6 @@ RUN npm install
 
 COPY . .
 
-# Gera client do Prisma e compila a aplicação
 RUN npx prisma generate
 RUN npm run build
 
@@ -17,7 +16,6 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Copia apenas o necessário da etapa anterior
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./
 COPY --from=builder /app/prisma ./prisma
@@ -25,5 +23,9 @@ COPY --from=builder /app/dist ./dist
 
 EXPOSE 3001
 
-# Executa migrations e inicia o app
-CMD npx prisma migrate deploy && npm run start:prod
+# Copia o start.sh e dá permissão de execução
+COPY start.sh .
+RUN chmod +x start.sh
+
+# Executa o script start.sh que roda migrations e inicia app
+CMD ["./start.sh"]

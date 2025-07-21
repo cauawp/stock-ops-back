@@ -7,3 +7,4 @@ import { SupplierService } from './supplier.service';
   providers: [SupplierService],
 })
 export class SupplierModule {}
+    

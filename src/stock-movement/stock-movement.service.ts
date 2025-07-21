@@ -31,7 +31,7 @@ export class StockMovementService {
         supplierId: data.supplierId,
       },
     });
-  }
+  } 
 
   async findAll(filter: FilterStockMovementDto) {
     return this.prisma.stockMovement.findMany({

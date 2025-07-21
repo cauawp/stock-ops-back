@@ -2,23 +2,43 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { CorsOptions } from '@nestjs/common/interfaces/external/cors-options.interface';
+import * as cookieParser from 'cookie-parser';
 
-// Módulos usados no Swagger
+// Swagger - Módulos incluídos
 import { UserModule } from './user/user.module';
 import { ProductModule } from './product/product.module';
 import { SupplierModule } from './supplier/supplier.module';
 import { StockMovementModule } from './stock-movement/stock-movement.module';
 import { AuthModule } from './auth/auth.module';
+import { EmailModule } from './email/email.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // ✅ Habilita CORS para qualquer origem (liberado)
-  app.enableCors({
-    origin: '*',
-  });
+  app.use(cookieParser());
 
-  // ✅ Validação global (DTOs)
+  // 🌐 Lista de origens permitidas (dev e produção)
+  const allowedOrigins = ['http://localhost:3000', 'https://seu-dominio.com'];
+
+  // ✅ Configuração de CORS com tipagem explícita
+  const corsOptions: CorsOptions = {
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`Origem não permitida pelo CORS: ${origin}`));
+      }
+    },
+    credentials: true,
+  };
+
+  app.enableCors(corsOptions);
+
+  // ✅ Validação global para DTOs
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -27,6 +47,7 @@ async function bootstrap() {
     }),
   );
 
+  // ✅ Configuração do Swagger
   const config = new DocumentBuilder()
     .setTitle('Plataforma de Gestão de Estoque')
     .setDescription(
@@ -50,6 +71,7 @@ async function bootstrap() {
       ProductModule,
       SupplierModule,
       StockMovementModule,
+      EmailModule,
     ],
   });
 
@@ -57,4 +79,5 @@ async function bootstrap() {
 
   await app.listen(process.env.PORT ?? 3001);
 }
+
 bootstrap();
