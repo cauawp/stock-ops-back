@@ -81,6 +81,7 @@ export class SupplierController {
   async createSupplier(
     @Body() data: CreateSupplierDto,
   ): Promise<SupplierWithRelationsEntity> {
+    console.log("DATA: ", data)
     return this.supplierService.create(data);
   }
 }
